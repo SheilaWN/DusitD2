@@ -1,4 +1,7 @@
 <?php
+require_once('phpmailer/class.phpmailer.php');
+define('GUSER', ''); // Gmail username
+define('GPWD', ''); // Gmail password
 /**
 * @package BSI
 * @author BestSoft Inc see README.php
@@ -25,32 +28,56 @@ class bsiMail
 		 **/
 		global $bsiCore;		
 					
-		$this->isSMTP = false;	
+		// $this->isSMTP = false;	
 			
-		if($this->isSMTP == true){	
-			require_once "Mail.php"; // PEAR Mail package
-			require_once ('Mail/mime.php'); // PEAR Mail_Mime package		
-			$this->emailFrom = $bsiCore->config['conf_hotel_name']."<bsimarketingdept@gmail.com>";		
-		}else{
-			$this->emailFrom = $bsiCore->config['conf_hotel_name']."<".$bsiCore->config['conf_hotel_email'].">";
-		}
+		// if($this->isSMTP == true){	
+		// 	require_once "Mail.php"; // PEAR Mail package
+		// 	require_once ('Mail/mime.php'); // PEAR Mail_Mime package		
+		// 	$this->emailFrom = $bsiCore->config['conf_hotel_name']."<bsimarketingdept@gmail.com>";		
+		// }else{
+		// 	$this->emailFrom = $bsiCore->config['conf_hotel_name']."<".$bsiCore->config['conf_hotel_email'].">";
+		// }
 		
-		$this->emailReplyTo 	= $bsiCore->config['conf_hotel_email'];
-		$this->smtpHost 		= "ssl://smtp.gmail.com";
-		$this->smtpPort 		= intval(465);
-		$this->smtpUserName 	= "bsimarketingdept@gmail.com";
-		$this->smtpPassword 	= "hhh";
-		//$this->loadEmailContent();	
-		if(!$this->smtpPort){
-			$this->smtpPort = NULL;
-		}			
+		// $this->emailReplyTo 	= $bsiCore->config['conf_hotel_email'];
+		// $this->smtpHost 		= "ssl://smtp.gmail.com";
+		// $this->smtpPort 		= intval(465);
+		// $this->smtpUserName 	= "bsimarketingdept@gmail.com";
+		// $this->smtpPassword 	= "hhh";
+		// //$this->loadEmailContent();	
+		// if(!$this->smtpPort){
+		// 	$this->smtpPort = NULL;
+		// }	
+
+		global $error;
+		
+		// $mail->AddAddress('jhungu@clintonhealthaccess.org');
+		// $mail->AddAddress('aaron.mbowa@dataposit.co.ke');
+		// $mail->AddAddress('jlusike@clintonhealthaccess.org');
+		// $mail->AddAddress('tngugi@clintonhealthaccess.org');
+		// $mail->AddAddress('baksajoshua09@gmail.com');		
 	}
 	
 	public function sendEMail($emailTo, $emailSubject, $emailBody){
-		$this->emailTo = $emailTo;
-		$this->emailSubject = $emailSubject;
-		$this->emailBody = $emailBody;
-		return (($this->isSMTP == true)? $this->sendSMTPMail() : $this->sendPHPMail());		
+		$mail = new PHPMailer();  // create a new object
+
+		$mail->IsSMTP(); // enable SMTP
+		$mail->SMTPDebug = 1;  // debugging: 1 = errors and messages, 2 = messages only
+		$mail->SMTPAuth = true;  // authentication enabled
+		$mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for Gmail
+		$mail->Host = 'smtp.gmail.com';
+		$mail->Port = 465; 
+		$mail->Username = GUSER;  
+		$mail->Password = GPWD; 
+		$mail->SetFrom('bsimarketingdept@gmail.com', 'DusitD2');
+		$mail->Subject = $emailSubject;
+		$mail->Body = $emailBody;
+		$mail->AddAddress($emailTo);
+		$mail->Send();
+		// echo "<pre>";print_r($mail);die();
+		// $this->emailTo = $emailTo;
+		// $this->emailSubject = $emailSubject;
+		// $this->emailBody = $emailBody;
+		return ((!$mail->Send())? $mail->ErrorInfo : $mail->Send());		
 	}
 	
 	/* Send Email using PHP Mail Function */	

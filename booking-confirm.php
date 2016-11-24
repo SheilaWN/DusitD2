@@ -19,6 +19,7 @@ session_destroy();
    <h2 align="left" style="padding-left:5px;"><?=BOOKING_COMPLETED_TEXT?></h2>
     <hr color="#e1dada"  style="margin-top:3px;"/><br /><br />
     <h4><?=THANK_YOU_TEXT?>!</h4><br /><?=YOUR_BOOKING_CONFIRMED_TEXT?>. <?=INVOICE_SENT_EMAIL_ADDRESS_TEXT?>.
+    <h4 style="padding-top: 1em;"><a href="index.php">Go back home</a></h4>
   </div>
 </div>
 </body>
