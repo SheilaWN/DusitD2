@@ -1,7 +1,7 @@
 <?php
 require_once('phpmailer/class.phpmailer.php');
-define('GUSER', 'nascop.eid.eic@gmail.com'); // Gmail username
-define('GPWD', 'masaiboy'); // Gmail password
+define('GUSER', ''); // Gmail username
+define('GPWD', ''); // Gmail password
 /**
 * @package BSI
 * @author BestSoft Inc see README.php
