@@ -1,27 +1,79 @@
 <?php 
-include("access.php");
+// include("access.php");
 include("../includes/db.conn.php");
-include("language.php");
-$path=pathinfo($_SERVER['PHP_SELF']);
-$filename=$path['basename'];
-$get_sub_title=mysql_query("select * from bsi_adminmenu where url='".$filename."'");
-if(mysql_num_rows($get_sub_title)){
-	$get_sub_title_row=mysql_fetch_array($get_sub_title);
-	$get_parent_title=mysql_query("select * from bsi_adminmenu where id='".$get_sub_title_row['parent_id']."'");
-	$get_parent_title_row=mysql_fetch_array($get_parent_title);
-	$main_title=$get_parent_title_row['name'].' > '.$get_sub_title_row['name'];
-	$_SESSION['main_title']=$main_title;
-}
-if($filename=='admin-home.php')
-$main_title="Home";
-elseif($filename=='change_password.php')
-$main_title="Change Password";
-else
-$main_title=$_SESSION['main_title'];
+// include("language.php");
+// $path=pathinfo($_SERVER['PHP_SELF']);
+// $filename=$path['basename'];
+// $get_sub_title=mysql_query("select * from bsi_adminmenu where url='".$filename."'");
+// if(mysql_num_rows($get_sub_title)){
+// 	$get_sub_title_row=mysql_fetch_array($get_sub_title);
+// 	$get_parent_title=mysql_query("select * from bsi_adminmenu where id='".$get_sub_title_row['parent_id']."'");
+// 	$get_parent_title_row=mysql_fetch_array($get_parent_title);
+// 	$main_title=$get_parent_title_row['name'].' > '.$get_sub_title_row['name'];
+// 	$_SESSION['main_title']=$main_title;
+// }
+// if($filename=='admin-home.php')
+// $main_title="Home";
+// elseif($filename=='change_password.php')
+// $main_title="Change Password";
+// else
+// $main_title=$_SESSION['main_title'];
  
-// include("header.php"); 
-include("../includes/conf.class.php");	
-include("../includes/admin.class.php");
+// // include("header.php"); 
+// include("../includes/conf.class.php");	
+// include("../includes/admin.class.php");
+
+// getting the preferred rooms
+$get_preferences = mysql_query("select count(bsi_reservation.id) as `selections`, bsi_roomtype.type_name from bsi_reservation left join bsi_roomtype on bsi_reservation.room_id = bsi_roomtype.roomtype_ID group by `type_name` order by `selections` desc");
+$count = 0;
+if (mysql_num_rows($get_preferences)) {
+	while($row_user = mysql_fetch_assoc($get_preferences)){
+		if ($row_user['type_name']==null || $row_user['type_name']=='null') {
+			$preferences[$count]['y'] = 'No data';
+		}else {
+			$preferences[$count]['y'] = $row_user['type_name'];
+		}
+		$preferences[$count]['a'] = (int) $row_user['selections'];
+		$count++;
+	}
+}else {
+	$preferences[$count]['y'] = 'No Data';
+	$preferences[$count]['a'] = (int) 0;
+}
+
+// getting the bookings data
+$get_bookings=mysql_query("select count(bsi_bookings.booking_id) as `bookings`, monthname(bsi_bookings.booking_time) as `month` from bsi_bookings left join bsi_clients on bsi_bookings.client_id = bsi_clients.client_id group by `month`");
+$count = 0;
+if(mysql_num_rows($get_bookings)){
+	while($row_user = mysql_fetch_assoc($get_bookings)){
+		$bookings[$count]['y'] = $row_user['month'];
+		$bookings[$count]['a'] = (int) $row_user['bookings'];
+		$count++;
+	}
+}else {
+	$bookings[$count]['y'] = 'No Data';
+	$bookings[$count]['a'] = (int) 0;
+}
+
+// getting the data table for frequent clients
+$count = 1;
+$table_data = '';
+$get_clients = mysql_query("select count(bsi_bookings.booking_id) as `visits`, bsi_clients.first_name, bsi_clients.surname, bsi_clients.email, bsi_clients.phone from bsi_bookings left join bsi_clients on bsi_bookings.client_id = bsi_clients.client_id group by bsi_bookings.client_id order by `visits` desc");
+
+if(mysql_num_rows($get_clients)){
+	while($row_user = mysql_fetch_assoc($get_clients)){
+		// echo "<pre>";print_r($row_user);die();
+		$table_data .= '<tr>
+                			<td>'.$count.'</td>
+                			<td>'.$row_user['first_name'].'</td>
+                			<td>'.$row_user['surname'].'</td>
+                			<td>'.$row_user['email'].'</td>
+                			<td>'.$row_user['phone'].'</td>
+                			<td>'.$row_user['visits'].'</td>
+                		</tr>';
+		$count++;
+	}
+}
 ?>      
 <!DOCTYPE html>
 <html lang="en">
@@ -187,16 +239,16 @@ include("../includes/admin.class.php");
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Hotel Manager<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="admin_hotel_details.php">Hotel Details</a>
+                                    <a href="admin_hotel_details2.php">Hotel Details</a>
                                 </li>
                                 <li>
-                                    <a href="room_list.php">Room Manager</a>
+                                    <a href="room_list2.php">Room Manager</a>
                                 </li>
                                 <li>
-                                    <a href="roomtype.php">Room Type Manager</a>
+                                    <a href="roomtype2.php">Room Type Manager</a>
                                 </li>
                                 <li>
-                                    <a href="admin_capacity.php">Capacity Manager</a>
+                                    <a href="admin_capacity2.php">Capacity Manager</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -205,10 +257,10 @@ include("../includes/admin.class.php");
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Price Manager<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="priceplan.php">Price Plan Manager</a>
+                                    <a href="priceplan2.php">Price Plan Manager</a>
                                 </li>
                                 <li>
-                                    <a href="advance_payment.php">Advance Payment</a>
+                                    <a href="advance_payment2.php">Advance Payment</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -217,40 +269,40 @@ include("../includes/admin.class.php");
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Booking Manager<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="view_bookings.php">View Booking List</a>
+                                    <a href="view_bookings2.php">View Booking List</a>
                                 </li>
                                 <li>
-                                    <a href="customerlookup.php">Customer Lookup</a>
+                                    <a href="customerlookup2.php">Customer Lookup</a>
                                 </li>
                                 <li>
-                                    <a href="calendar_view.php">Calendar View</a>
+                                    <a href="calendar_view2.php">Calendar View</a>
                                 </li>
                                 <li>
-                                    <a href="admin_block_room.php">Room Blocking</a>
+                                    <a href="admin_block_room2.php">Room Blocking</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="manage_language.php"><i class="fa fa-table fa-fw"></i> Manage Languages</a>
+                            <a href="manage_language2.php"><i class="fa fa-table fa-fw"></i> Manage Languages</a>
                         </li>
                         <li>
-                            <a href="regadmin.php"><i class="fa fa-edit fa-fw"></i> Register Administrator</a>
+                            <a href="regadmin2.php"><i class="fa fa-edit fa-fw"></i> Register Administrator</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Settings<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="global_setting.php">Global Setting</a>
+                                    <a href="global_setting2.php">Global Setting</a>
                                 </li>
                                 <li>
-                                    <a href="payment_gateway.php">Payment Gateway</a>
+                                    <a href="payment_gateway2.php">Payment Gateway</a>
                                 </li>
                                 <li>
-                                    <a href="email_content.php">Email Contents</a>
+                                    <a href="email_content2.php">Email Contents</a>
                                 </li>
                                 <li>
-                                    <a href="adminmenu.list.php">Admin Menu Manager</a>
+                                    <a href="adminmenu.list2.php">Admin Menu Manager</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -265,61 +317,98 @@ include("../includes/admin.class.php");
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Home</h1>
+                    <h1 class="page-header">Dashboard</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <?=LAST_10_BOOKING?>
+                            Popular Suites
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="preference-bar-chart"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Booking Trends
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="bookings-bar-chart"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Frequent Clients
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <?=$bsiAdminMain->homewidget(1)?>
+                            	<thead>
+                            		<tr>
+                            			<th>#</th>
+                            			<th>First Name</th>
+                            			<th>Last Name</th>
+                            			<th>Email</th>
+                            			<th>Phone</th>
+                            			<th>Visits</th>
+                            		</tr>
+                            	</thead>
+                            	<tbody>
+                            		<?php echo $table_data;?>
+                            	</tbody>
                             </table>
                         </div>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
                 </div>
-                <!-- /.col-lg-12 -->
-                <div class="col-lg-12">
+                <!-- /.col-lg-6 -->
+               <!--  <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <?=TODAY_CHECK_IN?>
+                            Donut Chart Example
                         </div>
-                        <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <?=$bsiAdminMain->homewidget(2)?>
-                            </table>
+                            <div id="morris-donut-chart"></div>
                         </div>
+                        
+                    </div>
+                    
+                </div> -->
+                <!-- /.col-lg-6 -->
+                <!-- <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Morris.js Usage
+                        </div>
+                        
+						<div class="panel-body">
+                            <p>Morris.js is a jQuery based charting plugin created by Olly Smith. In SB Admin, we are using the most recent version of Morris.js which includes the resize function, which makes the charts fully responsive. The documentation for Morris.js is available on their website, <a target="_blank" href="http://morrisjs.github.io/morris.js/">http://morrisjs.github.io/morris.js/</a>.</p>
+                            <a target="_blank" class="btn btn-default btn-lg btn-block" href="http://morrisjs.github.io/morris.js/">View Morris.js Documentation</a>
+                        </div> -->
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-12 -->
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <?=TODAY_CHECK_OUT?>
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <?=$bsiAdminMain->homewidget(3)?>
-                            </table>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-12 -->
+                </div> -->
+                <!-- /.col-lg-6 -->
             </div>
+            <!-- /.row -->
         </div>
         <!-- /#page-wrapper -->
 
@@ -328,21 +417,23 @@ include("../includes/admin.class.php");
 
     
 
-    <!-- Bootstrap Core JavaScript -->
+   <!-- Bootstrap Core JavaScript -->
     <script src="../admin/vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="../admin/vendor/metisMenu/metisMenu.min.js"></script>
 
-    <!-- DataTables JavaScript -->
+    <!-- Morris Charts JavaScript -->
+    <script src="../admin/vendor/raphael/raphael.min.js"></script>
+    <script src="../admin/vendor/morrisjs/morris.min.js"></script>
+    <!-- <script src="../admin/data/morris-data.js"></script> -->
+     <!-- DataTables JavaScript -->
     <script src="../admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
     <script src="../admin/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
     <script src="../admin/vendor/datatables-responsive/dataTables.responsive.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="../admin/dist/js/sb-admin-2.js"></script>
-
-    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
     $(document).ready(function() {
         $('#dataTables-example').DataTable({
@@ -352,117 +443,21 @@ include("../includes/admin.class.php");
 
     $(function() {
 
-    Morris.Area({
-        element: 'morris-area-chart',
-        data: [{
-            period: '2010 Q1',
-            iphone: 2666,
-            ipad: null,
-            itouch: 2647
-        }, {
-            period: '2010 Q2',
-            iphone: 2778,
-            ipad: 2294,
-            itouch: 2441
-        }, {
-            period: '2010 Q3',
-            iphone: 4912,
-            ipad: 1969,
-            itouch: 2501
-        }, {
-            period: '2010 Q4',
-            iphone: 3767,
-            ipad: 3597,
-            itouch: 5689
-        }, {
-            period: '2011 Q1',
-            iphone: 6810,
-            ipad: 1914,
-            itouch: 2293
-        }, {
-            period: '2011 Q2',
-            iphone: 5670,
-            ipad: 4293,
-            itouch: 1881
-        }, {
-            period: '2011 Q3',
-            iphone: 4820,
-            ipad: 3795,
-            itouch: 1588
-        }, {
-            period: '2011 Q4',
-            iphone: 15073,
-            ipad: 5967,
-            itouch: 5175
-        }, {
-            period: '2012 Q1',
-            iphone: 10687,
-            ipad: 4460,
-            itouch: 2028
-        }, {
-            period: '2012 Q2',
-            iphone: 8432,
-            ipad: 5713,
-            itouch: 1791
-        }],
-        xkey: 'period',
-        ykeys: ['iphone', 'ipad', 'itouch'],
-        labels: ['iPhone', 'iPad', 'iPod Touch'],
-        pointSize: 2,
-        hideHover: 'auto',
-        resize: true
-    });
-
-    Morris.Donut({
-        element: 'morris-donut-chart',
-        data: [{
-            label: "Download Sales",
-            value: 12
-        }, {
-            label: "In-Store Sales",
-            value: 30
-        }, {
-            label: "Mail-Order Sales",
-            value: 20
-        }],
+    Morris.Bar({
+        element: 'preference-bar-chart',
+        data: <?php echo(json_encode($preferences));?>,
+		  xkey: 'y',
+		  ykeys: ['a'],
+		  labels: ['Bookings'],
         resize: true
     });
 
     Morris.Bar({
-        element: 'morris-bar-chart',
-        data: [{
-            y: '2006',
-            a: 100,
-            b: 90
-        }, {
-            y: '2007',
-            a: 75,
-            b: 65
-        }, {
-            y: '2008',
-            a: 50,
-            b: 40
-        }, {
-            y: '2009',
-            a: 75,
-            b: 65
-        }, {
-            y: '2010',
-            a: 50,
-            b: 40
-        }, {
-            y: '2011',
-            a: 75,
-            b: 65
-        }, {
-            y: '2012',
-            a: 100,
-            b: 90
-        }],
-        xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['Series A', 'Series B'],
-        hideHover: 'auto',
+        element: 'bookings-bar-chart',
+        data: <?php echo(json_encode($bookings));?>,
+		  xkey: 'y',
+		  ykeys: ['a'],
+		  labels: ['Bookings'],
         resize: true
     });
     

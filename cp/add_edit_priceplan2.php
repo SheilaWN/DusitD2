@@ -1,28 +1,79 @@
-<?php 
-include("access.php");
+<?php
+include ("access.php");
+if(isset($_POST['act']) && $_POST['act'] == 1){
+	include("../includes/db.conn.php");
+	include("../includes/conf.class.php");
+	include("../includes/admin.class.php");
+	if($_POST['roomtype_edit'] > 0){
+		$bsiAdminMain->priceplan_edit($_POST['roomtype_edit']);
+	}else{
+		$bsiAdminMain->priceplan_add_edit(); 
+	}
+	exit;
+}
+$pageid = 36;
 include("../includes/db.conn.php");
 include("language.php");
 $path=pathinfo($_SERVER['PHP_SELF']);
 $filename=$path['basename'];
 $get_sub_title=mysql_query("select * from bsi_adminmenu where url='".$filename."'");
 if(mysql_num_rows($get_sub_title)){
-	$get_sub_title_row=mysql_fetch_array($get_sub_title);
-	$get_parent_title=mysql_query("select * from bsi_adminmenu where id='".$get_sub_title_row['parent_id']."'");
-	$get_parent_title_row=mysql_fetch_array($get_parent_title);
-	$main_title=$get_parent_title_row['name'].' > '.$get_sub_title_row['name'];
-	$_SESSION['main_title']=$main_title;
+  $get_sub_title_row=mysql_fetch_array($get_sub_title);
+  $get_parent_title=mysql_query("select * from bsi_adminmenu where id='".$get_sub_title_row['parent_id']."'");
+  $get_parent_title_row=mysql_fetch_array($get_parent_title);
+  $main_title=$get_parent_title_row['name'].' > '.$get_sub_title_row['name'];
+  $_SESSION['main_title']=$main_title;
 }
-if($filename=='admin-home.php')
-$main_title="Home";
-elseif($filename=='change_password.php')
-$main_title="Change Password";
-else
-$main_title=$_SESSION['main_title'];
- 
-// include("header.php"); 
-include("../includes/conf.class.php");	
+
+include("../includes/conf.class.php");
 include("../includes/admin.class.php");
-?>      
+$getHTML  = array();
+$getHTML1 = array();
+$getHTML2 = array();
+$row      = array();
+$id=$bsiCore->ClearInput($_REQUEST['rtype']);
+if($id){
+	$text     = '';
+	$start_dt = mysql_real_escape_string($_REQUEST['start_dt']);
+	if($start_dt != '0000-00-00'){
+		
+		$row=mysql_fetch_assoc(mysql_query("SELECT bp.*, DATE_FORMAT(start_date, '".$bsiCore->userDateFormat."') AS start_date1,
+		DATE_FORMAT(end_date, '".$bsiCore->userDateFormat."') AS end_date1, start_date, end_date, bc.title, bc.capacity FROM `bsi_priceplan` as bp,bsi_capacity as bc
+		where `plan_id`='".$id."' and start_date='".$start_dt."' and default_plan=0 and bp.capacity_id=bc.id group by
+		`roomtype_id`,`start_date`"));
+		
+	}else{
+		
+		$row = mysql_fetch_assoc(mysql_query("SELECT bp.*, DATE_FORMAT(start_date, '".$bsiCore->userDateFormat."') AS start_date1,
+		DATE_FORMAT(end_date, '".$bsiCore->userDateFormat."') AS end_date1, start_date, end_date, bc.title, bc.capacity FROM `bsi_priceplan` as bp,bsi_capacity as bc 
+		where `plan_id`='".$id."' and start_date='".$start_dt."' and default_plan=1 and bp.capacity_id=bc.id group by 
+		`roomtype_id`,`start_date`"));
+		
+	}
+	$rtypeName = mysql_fetch_assoc(mysql_query("select * from bsi_roomtype where roomtype_ID='".$row['roomtype_id']."'"));
+	
+	$getHTML   = $bsiAdminMain->getDatepicker($id, $rtypeName['type_name'], $row['start_date'], $row['end_date'], $row);
+	
+	$getHTML1  = $getHTML['html'];
+	
+	$getHTML2  = $getHTML['editPriceplanHTML'];
+	
+	$text      = '';
+	
+}else{
+	
+	$getHTML   = $bsiAdminMain->getDatepicker();
+	
+	$getHTML1  = $getHTML['html'];
+	
+	$getHTML2  = $getHTML['editPriceplanHTML'];
+	
+	$start_dt  = '0000-00-00';
+	
+	$text      = PLEASE_SELECT_ROOMTYPE_FROM_DROPDOWN;
+}
+?>  
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,7 +85,7 @@ include("../includes/admin.class.php");
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>DusitD2</title>
+    <title>Admin Module</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -62,10 +113,69 @@ include("../includes/admin.class.php");
     <![endif]-->
     <!-- jQuery -->
     <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js//dtpicker/jquery.ui.datepicker-<?=$langauge_selcted?>.js"></script>
 </head>
 
 <body>
-
+<script type="text/javascript" charset="">
+   $(document).ready(function() {
+   $("#priceplanaddeit").validate();
+   $('#roomtype_id').change(function() {
+         if($('#roomtype_id').val() != 0){
+			var querystr = 'actioncode=3&roomtype_id='+$('#roomtype_id').val();		
+			$.post("admin_ajax_processor.php", querystr, function(data){												 
+				if(data.errorcode == 0){
+					 $('#default_capacity').html(data.strhtml)
+				}else{
+				    $('#default_capacity').html("<span style=\"font-family:Arial, Helvetica, sans-serif; font-size:12px;\">'<?php  echo NOT_FOUND;?>'</span>")
+				}
+			}, "json");
+		} else {
+		 $('#default_capacity').html("<span style=\"font-family:Arial, Helvetica, sans-serif; font-size:12px;\">'<?php echo PLEASE_SELECT_ROOMTYPE_FROM_DROPDOWN_ALERT; ?>'</span>")
+		}
+	});
+	
+	if($('#roomtype').val() == 0){
+		$('#default_capacity').html("<span style=\"font-family:Arial, Helvetica, sans-serif; font-size:12px;\">'<?php echo PLEASE_SELECT_ROOMTYPE_FROM_DROPDOWN_ALERT; ?>'</span>")
+	}
+});
+ 
+$(document).ready(function(){
+	$.datepicker.setDefaults( $.datepicker.regional[ "<?=$langauge_selcted?>" ] );
+	$.datepicker.setDefaults({ dateFormat: '<?=$bsiCore->config['conf_dateformat']?>' });
+    $("#txtFromDate").datepicker({
+        minDate: 0,
+        maxDate: "+365D",
+        numberOfMonths: 2,
+        onSelect: function(selected) {
+        var date = $(this).datepicker('getDate');
+        if(date){
+            date.setDate(date.getDate() + <?=$bsiCore->config['conf_min_night_booking']?>);
+        }
+          $("#txtToDate").datepicker("option","minDate", date)
+        }
+    });
+    $("#txtToDate").datepicker({ 
+        minDate: 0,
+        maxDate:"+365D",
+        numberOfMonths: 2,
+        onSelect: function(selected) {
+           $("#txtFromDate").datepicker("option","maxDate", selected)
+        }
+    });
+	
+	$("#txtFromDate").datepicker();
+	$("#datepickerImage").click(function() { 
+		$("#txtFromDate").datepicker("show");
+	});
+	
+	$("#txtToDate").datepicker();
+	$("#datepickerImage1").click(function() { 
+		$("#txtToDate").datepicker("show");
+	});    
+});
+</script>
     <div id="wrapper">
 
         <!-- Navigation -->
@@ -265,7 +375,7 @@ include("../includes/admin.class.php");
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Home</h1>
+                    <h1 class="page-header"><?php echo CAPACITY_ADD_AND_EDIT; ?></h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -274,52 +384,38 @@ include("../includes/admin.class.php");
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <?=LAST_10_BOOKING?>
+                            <?php echo CAPACITY_ADD_AND_EDIT; ?>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <?=$bsiAdminMain->homewidget(1)?>
-                            </table>
+	                        <span style="font-size:16px; font-weight:bold"><?php echo PRICE_PLAN_ADD_AND_EDIT;?></span>
+							    <input type="button" value="<?php echo PRICE_PLAN_BACK;?>" onClick="window.location.href='priceplan.php'" style="background:#e5f9bb; cursor:pointer; cursor:hand; float:right; "/>
+							<hr style="margin-top:10px;" />
+                        	<form action="" method="post" id="form1">
+	                        	<input type="hidden" name="roomtype_edit" value="<?=$id?>" />
+							    <input type="hidden" name="roomtype" value="<?=$row['roomtype_id']?>" />
+							    <input type="hidden" name="start_date_old" value="<?=$start_dt?>" />
+							    <input type="hidden" name="act" value="1" />
+                                <table cellpadding="5" cellspacing="2" border="0">
+							      <tr>
+							        <td colspan="2" align="center" style="font-size:14px; color:#006600; font-weight:bold"><?php if(isset($error_msg)) echo $error_msg; ?></td>
+							      </tr>
+							      <?=$getHTML1?>
+							      <tr>
+							        <td id="default_capacity" colspan="2">
+							          <?=$text?>
+							          <?=$getHTML2?>
+							        </td>
+							      </tr> 
+							    </table>
+                            </form>
                         </div>
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
                 </div>
-                <!-- /.col-lg-12 -->
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <?=TODAY_CHECK_IN?>
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <?=$bsiAdminMain->homewidget(2)?>
-                            </table>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-12 -->
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <?=TODAY_CHECK_OUT?>
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <?=$bsiAdminMain->homewidget(3)?>
-                            </table>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-12 -->
             </div>
+            <!-- /.row -->
         </div>
         <!-- /#page-wrapper -->
 
@@ -342,134 +438,13 @@ include("../includes/admin.class.php");
     <!-- Custom Theme JavaScript -->
     <script src="../admin/dist/js/sb-admin-2.js"></script>
 
-    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-    <script>
+    <script type="text/javascript">
     $(document).ready(function() {
-        $('#dataTables-example').DataTable({
-            responsive: true
-        });
-    });
-
-    $(function() {
-
-    Morris.Area({
-        element: 'morris-area-chart',
-        data: [{
-            period: '2010 Q1',
-            iphone: 2666,
-            ipad: null,
-            itouch: 2647
-        }, {
-            period: '2010 Q2',
-            iphone: 2778,
-            ipad: 2294,
-            itouch: 2441
-        }, {
-            period: '2010 Q3',
-            iphone: 4912,
-            ipad: 1969,
-            itouch: 2501
-        }, {
-            period: '2010 Q4',
-            iphone: 3767,
-            ipad: 3597,
-            itouch: 5689
-        }, {
-            period: '2011 Q1',
-            iphone: 6810,
-            ipad: 1914,
-            itouch: 2293
-        }, {
-            period: '2011 Q2',
-            iphone: 5670,
-            ipad: 4293,
-            itouch: 1881
-        }, {
-            period: '2011 Q3',
-            iphone: 4820,
-            ipad: 3795,
-            itouch: 1588
-        }, {
-            period: '2011 Q4',
-            iphone: 15073,
-            ipad: 5967,
-            itouch: 5175
-        }, {
-            period: '2012 Q1',
-            iphone: 10687,
-            ipad: 4460,
-            itouch: 2028
-        }, {
-            period: '2012 Q2',
-            iphone: 8432,
-            ipad: 5713,
-            itouch: 1791
-        }],
-        xkey: 'period',
-        ykeys: ['iphone', 'ipad', 'itouch'],
-        labels: ['iPhone', 'iPad', 'iPod Touch'],
-        pointSize: 2,
-        hideHover: 'auto',
-        resize: true
-    });
-
-    Morris.Donut({
-        element: 'morris-donut-chart',
-        data: [{
-            label: "Download Sales",
-            value: 12
-        }, {
-            label: "In-Store Sales",
-            value: 30
-        }, {
-            label: "Mail-Order Sales",
-            value: 20
-        }],
-        resize: true
-    });
-
-    Morris.Bar({
-        element: 'morris-bar-chart',
-        data: [{
-            y: '2006',
-            a: 100,
-            b: 90
-        }, {
-            y: '2007',
-            a: 75,
-            b: 65
-        }, {
-            y: '2008',
-            a: 50,
-            b: 40
-        }, {
-            y: '2009',
-            a: 75,
-            b: 65
-        }, {
-            y: '2010',
-            a: 50,
-            b: 40
-        }, {
-            y: '2011',
-            a: 75,
-            b: 65
-        }, {
-            y: '2012',
-            a: 100,
-            b: 90
-        }],
-        xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['Series A', 'Series B'],
-        hideHover: 'auto',
-        resize: true
-    });
-    
-});
-
-    </script>
-
-</body>
-
-</html>
+        $("#form1").validate();
+        $("#roomtype_id").attr("class","form-control");
+        $("#capacity_id").attr("class","form-control");
+     });
+         
+</script> 
+<script src="js/jquery.validate.js" type="text/javascript"></script>
+<?php include("footer.php"); ?>
