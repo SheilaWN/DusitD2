@@ -18,31 +18,31 @@ include("../includes/conf.class.php");
     <table cellpadding="5" cellspacing="2" border="0">
       <tr>
         <td valign="middle"><strong>First Name:</strong></td>
-        <td><input type="text" name="hotel_name" class="required" size="50" placeholder="First Name"/></td>
+        <td><input type="text" name="first_name" class="required" size="50" placeholder="First Name"/></td>
       </tr>
       <tr>
         <td valign="middle"><strong>Last Name:</strong></td>
-        <td><input type="text" name="str_addr" class="required" size="40" placeholder="Last Name"/></td>
+        <td><input type="text" name="last_name" class="required" size="40" placeholder="Last Name"/></td>
       </tr>
       <tr>
         <td valign="middle"><strong>Email Adderess</strong></td>
-        <td><input type="text" name="city" size="30" class="required" placeholder="Email Address"/></td>
+        <td><input type="email" name="emial" size="30" class="required" placeholder="Email Address"/></td>
       </tr>
       <tr>
         <td valign="middle"><strong>Position:</strong></td>
-        <td><input type="text" name="state" class="required" size="30" placeholder="Position"/></td>
+        <td><input type="text" name="position" class="required" size="30" placeholder="Position"/></td>
       </tr>
       <tr>
         <td valign="middle"><strong>Username:</strong></td>
-        <td><input type="text" name="country" class="required" size="30" placeholder="Username"/></td>
+        <td><input type="text" name="username" class="required" size="30" placeholder="Username"/></td>
       </tr>
       <tr>
         <td valign="middle"><strong>Password:</strong></td>
-        <td><input type="text" name="zipcode" class="required" size="10" placeholder="Password"/></td>
+        <td><input type="password" name="password" class="required" size="10" placeholder="Password"/></td>
       </tr>
       <tr>
         <td valign="middle"><strong>Confirm Password:</strong></td>
-        <td><input type="text" name="phone" class="required" size="15" placeholder="Confirm Password"/></td>
+        <td><input type="password" name="confirm_password" class="required" size="15" placeholder="Confirm Password"/></td>
       </tr>
       
       <tr>
