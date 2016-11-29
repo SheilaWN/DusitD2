@@ -257,10 +257,10 @@ if(mysql_num_rows($get_clients)){
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Price Manager<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="priceplan2.php">Price Plan Manager</a>
+                                    <a href="priceplan.php">Price Plan Manager</a>
                                 </li>
                                 <li>
-                                    <a href="advance_payment2.php">Advance Payment</a>
+                                    <a href="advance_payment.php">Advance Payment</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -269,37 +269,35 @@ if(mysql_num_rows($get_clients)){
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Booking Manager<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="view_bookings2.php">View Booking List</a>
+                                    <a href="view_bookings.php">View Booking List</a>
                                 </li>
                                 <li>
-                                    <a href="customerlookup2.php">Customer Lookup</a>
+                                    <a href="customerlookup.php">Customer Lookup</a>
                                 </li>
                                 <li>
-                                    <a href="calendar_view2.php">Calendar View</a>
+                                    <a href="calendar_view.php">Calendar View</a>
                                 </li>
                                 <li>
-                                    <a href="admin_block_room2.php">Room Blocking</a>
+                                    <a href="admin_block_room.php">Room Blocking</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+                        
                         <li>
-                            <a href="manage_language2.php"><i class="fa fa-table fa-fw"></i> Manage Languages</a>
-                        </li>
-                        <li>
-                            <a href="regadmin2.php"><i class="fa fa-edit fa-fw"></i> Register Administrator</a>
+                            <a href="regadmin.php"><i class="fa fa-edit fa-fw"></i> Register Administrator</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Settings<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="global_setting2.php">Global Setting</a>
+                                    <a href="global_setting.php">Global Setting</a>
                                 </li>
                                 <li>
-                                    <a href="payment_gateway2.php">Payment Gateway</a>
+                                    <a href="payment_gateway.php">Payment Gateway</a>
                                 </li>
                                 <li>
-                                    <a href="email_content2.php">Email Contents</a>
+                                    <a href="email_content.php">Email Contents</a>
                                 </li>
                                 <li>
                                     <a href="adminmenu.list2.php">Admin Menu Manager</a>
