@@ -278,7 +278,7 @@ include("../includes/admin.class.php");
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Rooms Manager</h1>
+                    <h1 class="page-header">Capacity Manager</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
