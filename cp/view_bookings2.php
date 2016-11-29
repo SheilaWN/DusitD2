@@ -1,13 +1,6 @@
 <?php 
 include("access.php");
-if(isset($_GET['cdelid'])){
-	include("../includes/db.conn.php"); 
-	include("../includes/conf.class.php");
-	include("../includes/admin.class.php");
-	$bsiAdminMain->delete_capacity();
-	header("location:admin_capacity.php");	
-	exit;
-}
+
 include("../includes/db.conn.php");
 include("language.php");
 $path=pathinfo($_SERVER['PHP_SELF']);
@@ -20,7 +13,7 @@ if(mysql_num_rows($get_sub_title)){
   $main_title=$get_parent_title_row['name'].' > '.$get_sub_title_row['name'];
   $_SESSION['main_title']=$main_title;
 }
-include("../includes/admin.class.php");
+include("../includes/conf.class.php");
 ?>
 
 <!DOCTYPE html>
@@ -54,6 +47,9 @@ include("../includes/admin.class.php");
     <!-- Custom Fonts -->
     <link href="../admin/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+    <link rel="stylesheet" type="text/css" href="css/jquery.validate.css" />
+ 
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -62,22 +58,43 @@ include("../includes/admin.class.php");
     <![endif]-->
     <!-- jQuery -->
     <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js//dtpicker/jquery.ui.datepicker-<?=$langauge_selcted?>.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../admin/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../admin/vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="../admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../admin/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="../admin/vendor/datatables-responsive/dataTables.responsive.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../admin/dist/js/sb-admin-2.js"></script>
+    
 </head>
 
 <body>
-<script type="text/javascript">
-	function capacitydelete(cid){
-		var ans=confirm('<?php echo DO_YOU_WANT_TO_DELETE_THE_SELECTED_CAPACITY_ALERT;?>');
-		if(ans){
-			window.location='<?=$_SERVER['PHP_SELF']?>?cdelid='+cid;
-			return true;
-			
-		}else{
-			return false;
-			
+ <script type="text/javascript">
+	$(document).ready(function(){
+		disableInput("#submit");
+		$('#book_type').change(function(){
+			if($('#book_type').val() != ""){
+				enableInput("#submit");			
+			}else{
+				disableInput("#submit");
+			}
+		});
+		//Enabling Disabling Function
+		function disableInput(id){
+			jQuery(id).attr('disabled', 'disabled');
 		}
-		
-	}
+		function enableInput(id){
+			jQuery(id).removeAttr('disabled');	
+		}
+	});
 </script>
     <div id="wrapper">
 
@@ -278,7 +295,7 @@ include("../includes/admin.class.php");
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Rooms Manager</h1>
+                    <h1 class="page-header">VIEW_BOOKING_LIST</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -287,24 +304,24 @@ include("../includes/admin.class.php");
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <?php echo ROOM_LIST;?>
+                            <?php echo VIEW_BOOKING_LIST;?>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                        	<span style="font-size:16px; font-weight:bold"><?php echo ROOM_LIST;?></span><span style="font-size:13px; color:#F00; padding-left:200px;"><?php if(isset($_SESSION['msg_exists'])){ echo $_SESSION['msg_exists']; }
-							unset($_SESSION['msg_exists']);?></span>
-							    <input type="button" value="<?php echo ADD_NEW_ROOM;?>" onClick="window.location.href='add_edit_room.php?rid=0&cid=0'" style="background: #EFEFEF; float:right"/>
-							 <hr />
-                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-							    <thead>
-							      <tr>
-							        <th><?php echo CAPACITY_TITLE;?></th>
-							        <th><?php echo NO_OF_ADULT_CAPACITY;?></th>
-							        <th>&nbsp;</th>
-							      </tr>
-							    </thead>
-							    <?=$bsiAdminMain->generateCapacityListHtml()?>
-							  </table>
+                        	 <form action="view_active_or_archieve_bookings.php" method="post" id="form1">
+						          <table cellpadding="5" cellspacing="2" border="0">
+						            <tr>
+						            <td valign="middle"><strong><?php echo SELECT_BOOKING_TYPE;?></strong>:</td>
+						            <td><select name="book_type" id="book_type"><option value="">---<?php echo VIEW_BOOKINGS_SELECT_TYPE;?>---</option><option value="1"><?php echo ACTIVE_BOOKING;?></option><option value="2"><?php echo BOOKING_HISTORY;?></option></select> </td>
+						            
+						            </tr>
+						            
+						           <tr><td><strong><?=VB_DATE_RANGE?>(<?=VB_OPTIONAL?>)</strong></td><td><input id="txtFromDate" name="fromDate" style="width:68px" type="text" readonly="readonly" />
+						      <span style="padding-left:0px;"><a id="datepickerImage" href="javascript:;"><img src="../images/month.png" height="16px" width="16px" style=" margin-bottom:-4px;" border="0" /></a></span>&nbsp;&nbsp;&nbsp;&nbsp; <strong><?=VB_TO?></strong> &nbsp;&nbsp;&nbsp;&nbsp;<input id="txtToDate" name="toDate" style="width:68px" type="text" readonly="readonly"/>
+						      <span style="padding-left:0px;"><a id="datepickerImage1" href="javascript:;"><img src="../images/month.png" height="18px" width="18px" style=" margin-bottom:-4px;" border="0" /></a></span>&nbsp;&nbsp;&nbsp;&nbsp;<strong><?=VB_BY?></strong>&nbsp;&nbsp;&nbsp;&nbsp;<select name="shortby"><option value="booking_time" selected="selected"><?=VIEW_ACTIVE_BOOKING_DATE?></option><option value="start_date"><?=ROOM_BLOCK_CHECK_IN_DATE?></option><option value="end_date"><?=ROOM_BLOCK_CHECK_OUT_DATE?></option></select></td></tr>
+						           <tr><td></td><td><input type="submit" value="<?php echo VIEW_BOOKINGS_SUBMIT;?>" name="submit" id="submit" style="background:#e5f9bb; cursor:pointer; cursor:hand;"/></td></tr>
+						          </table>
+						        </form>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -320,26 +337,40 @@ include("../includes/admin.class.php");
 
     
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../admin/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="../admin/vendor/metisMenu/metisMenu.min.js"></script>
 
-    <!-- DataTables JavaScript -->
-    <script src="../admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="../admin/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
-    <script src="../admin/vendor/datatables-responsive/dataTables.responsive.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/datepicker.css" />
 
-    <!-- Custom Theme JavaScript -->
-    <script src="../admin/dist/js/sb-admin-2.js"></script>
-
-    <script type="text/javascript">
-    $(document).ready(function() {
-        $("#form1").validate();
-        
-     });
-         
-</script> 
+   <script type="text/javascript">
+		$(document).ready(function(){
+			$.datepicker.setDefaults( $.datepicker.regional[ "<?=$langauge_selcted?>" ] );
+		 $.datepicker.setDefaults({ dateFormat: '<?=$bsiCore->config['conf_dateformat']?>' });
+		    $("#txtFromDate").datepicker({
+		        maxDate: "+365D",
+		        numberOfMonths: 2,
+		        onSelect: function(selected) {
+		    	var date = $(this).datepicker('getDate');
+		         if(date){
+		            date.setDate(date.getDate());
+		          }
+		          $("#txtToDate").datepicker("option","minDate", date)
+		        }
+		    });
+		 
+		    $("#txtToDate").datepicker({ 
+		        maxDate:"+365D",
+		        numberOfMonths: 2,
+		        onSelect: function(selected) {
+		           $("#txtFromDate").datepicker("option","maxDate", selected)
+		        }
+		    });  
+		 $("#datepickerImage").click(function() { 
+		    $("#txtFromDate").datepicker("show");
+		  });
+		 $("#datepickerImage1").click(function() { 
+		    $("#txtToDate").datepicker("show");
+		  });
+		});
+		</script>
 <script src="js/jquery.validate.js" type="text/javascript"></script>
 <?php include("footer.php"); ?>
