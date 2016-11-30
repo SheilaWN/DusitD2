@@ -116,7 +116,6 @@ if($id){
     <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="../js/dtpicker/jquery.ui.datepicker-<?=$langauge_selcted?>.js"></script>
 </head>
-<?=$bsiCore->config['conf_dateformat'];die();?>
 <body>
 <script type="text/javascript" charset="">
    $(document).ready(function() {
