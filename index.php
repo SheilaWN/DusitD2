@@ -337,7 +337,7 @@ Specific menus and food </p>
 		<div class="container">
 			<img src="template/images/logo5.png" class="img-responsive" alt="">
 			<h3>BE OUR GUESTS</h3>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pellentesque justo ac velit facilisis convallis vel id </p>
+			<p> Hungry,thirsty or simply int the mood to party? DusitD2 Nairobi's drinking and dinning establishment are destinations in themselves, offering world class cusine in an array of settings.Taste the worlds best food in our hotel outlet or order from our specially created in-room dinning menu to enjoy renowed cuisine in the commfort of your personal sanctuary. </p>
 		</div>
 	</div>
 <!-- guests -->
@@ -356,10 +356,10 @@ Specific menus and food </p>
 					<li>Nairobi</p></li>
 				</ul>
 				<p>0707997652</p>
-				<h6><a href="#">info@rooms.com</h6></a>
+				<h6><a href="#">swn@gmail.com</h6></a>
 			</div>
 				<div class="clearfix"> </div>
-					<div class="footer-left3">
+					<div clas="footer-left3">
 						<ul>
 							<li><a href="#"><i class="fb"></i></a></li>
 							<li><a href="#"><i class="twt"></i></a></li>
@@ -373,12 +373,12 @@ Specific menus and food </p>
 					</div>
 		</div>
 		<div class="col-md-6 footer-right">
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et varius turpis. Donec enim sapien, sollicitudin quis volutpat nec, sagittis eget ex. Pellentesque in accumsan orci.-<span>Ian Solo-</span></p>
+			<p><p> Our services are available 24 hours a day to meet your requirements.-<span>Sheila Bobo-</span></p>
 			<div class="col-md-6 footer-right1">
-				<img src="template/images/fo.png" class="img-responsive" alt="">
+				<img src="gallery/icon1.jpg" class="img-responsive" alt="">
 			</div>
 			<div class="col-md-6 footer-right2">
-				<img src="template/images/un.png" class="img-responsive" alt="">
+				<img src="gallery/icon2.jpg" class="img-responsive" alt="">
 			</div>
 				<div class="clearfix"> </div>
 			

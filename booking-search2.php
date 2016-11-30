@@ -129,7 +129,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<li>Nairobi</p></li>
 				</ul>
 				<p>0707997652</p>
-				<h6><a href="#">info@rooms.com</h6></a>
+				<h6><a href="#">swn@gmail.com</h6></a>
 			</div>
 				<div class="clearfix"> </div>
 					<div class="footer-left3">
@@ -146,7 +146,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					</div>
 		</div>
 		<div class="col-md-6 footer-right">
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et varius turpis. Donec enim sapien, sollicitudin quis volutpat nec, sagittis eget ex. Pellentesque in accumsan orci.-<span>Ian Solo-</span></p>
+			<p> Our services are available 24 hours a day to meet your requirements.-<span>Sheila Bobo-</span></p>
 			<div class="col-md-6 footer-right1">
 				<img src="template/images/fo.png" class="img-responsive" alt="">
 			</div>

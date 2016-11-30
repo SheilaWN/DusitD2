@@ -1,13 +1,14 @@
 <?php 
 include("access.php");
-if(isset($_POST['submitCapacity'])){
-	include("../includes/db.conn.php"); 
-	include("../includes/conf.class.php");
-	include("../includes/admin.class.php");
-	$bsiAdminMain->add_edit_capacity();
-	header("location:admin_capacity.php");	
-	exit;
-}
+if(isset($_POST['act_save'])){
+		include("../includes/db.conn.php");
+		$month_num1=$_POST;
+		for($j=1;$j<=12;$j++){
+			mysql_query("update bsi_advance_payment set deposit_percent='".$month_num1[$j]."' where month_num=".$j);
+		}
+		header("location:advance_payment.php");
+ }
+
 include("../includes/db.conn.php");
 include("language.php");
 $path=pathinfo($_SERVER['PHP_SELF']);
@@ -22,21 +23,14 @@ if(mysql_num_rows($get_sub_title)){
 }
 
 include("../includes/conf.class.php");
-include("../includes/admin.class.php");
-if(isset($_GET['id']) && $_GET['id'] != ""){
-	$id = $bsiCore->ClearInput($_GET['id']);
-	if($id){
-		$result = mysql_query($bsiAdminMain->getCapacitysql($id));
-		$row    = mysql_fetch_assoc($result);
-		$readonly = 'readonly="readonly"';
+$depo_val='';
+	if($bsiCore->config['conf_enabled_deposit']==1){
+		$depo_val  = 1;
+	$deposit_check = "checked";
 	}else{
-		$row    = NULL;
-		$readonly = '';
+		$depo_val=0;
+	$deposit_check = "";
 	}
-}else{
-	header("location:admin_capacity.php");
-	exit;
-}
 ?>  
 
 <!DOCTYPE html>
@@ -78,19 +72,40 @@ if(isset($_GET['id']) && $_GET['id'] != ""){
     <![endif]-->
     <!-- jQuery -->
     <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js//dtpicker/jquery.ui.datepicker-<?=$langauge_selcted?>.js"></script>
 </head>
 
 <body>
-
+	<script type="text/javascript">
+		$(document).ready(function(){
+				if(<?=$depo_val?>==1){								 
+					showDeposit();
+				}
+		  		$('#chk_deposit').click(function() {
+					showDeposit();		
+				});
+				
+				function showDeposit(){
+				 var chk_deposit=$('#chk_deposit').attr('checked');
+					var querystr = 'actioncode=4&type=2&chk_deposit='+chk_deposit; 
+					$.post("admin_ajax_processor.php", querystr, function(data){											  
+						if(data.errorcode == 0){
+							$('#showdeposit').html(data.getresult)
+						}
+						}, "json");
+			}
+		});
+	</script>
     <div id="wrapper">
 
         <!-- Navigation -->
-         <?php include_once('admin_nav.php');?>
+        <?php include_once('admin_nav.php');?>
 
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header"><?php echo CAPACITY_ADD_AND_EDIT; ?></h1>
+                    <h1 class="page-header"><?php echo ADVANCE_PAYMENT_SETTING; ?></h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -99,26 +114,23 @@ if(isset($_GET['id']) && $_GET['id'] != ""){
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <?php echo CAPACITY_ADD_AND_EDIT; ?>
+                            <?php echo ADVANCE_PAYMENT_SETTING; ?>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                          <form action="<?=$_SERVER['PHP_SELF']?>" method="post" id="form1">
-                                <div class="col-lg-6">       
-                                  <div class="form-group">
-                                      <label><?php echo CAPACITY_TITLE_ADD_EDIT; ?>:</label>
-                                      <input type="text" name="capacity_title" id="capacity_title" class="required digits form-control"  value="<?=$row['title']?>" size="15"/>&nbsp;&nbsp;<?php echo EXAMPLE_SINGLE_DOUBLE; ?>
-                                  </div>
-                                  <div class="form-group">
-                                      <label><?php echo ADD_EDIT_CAPACITY_NUMBER_OF_ADULT; ?>:</label>
-                                      <input type="text" name="no_adult" id="no_adult" <?=$readonly?> value="<?=$row['capacity']?>" class="required number form-control"  />
-                                  </div>
-                                  <input type="hidden" name="addedit" value="<?=$id?>">
-                                  <div class="form-group">
-                                     <input type="submit" value="<?php echo ADD_EDIT_CAPACITY_SUBMIT;?>" name="sbt_details" id="sbt_details" class="btn btn-primary"/>
-                                  </div>
-                                </div>
-                            </form>
+	                        <form action="<?=$_SERVER['PHP_SELF']?>" method="post" id="form1">
+					          <table cellpadding="5" cellspacing="2" border="0" width="100%">
+					          <thead>
+					          <tr>
+					            <th colspan="2"  align="left"><input type="checkbox" <?=$deposit_check?>  id="chk_deposit" name="chk_deposit" value=""/><?php echo ENABLED_MONTHLY_DEPOSIT_SCHEME;?></th>
+					            
+					          </tr>
+					          <tr><th colspan="2" colspan="2"><hr /></th></tr>
+					        </thead>
+					        <tbody id="showdeposit">
+					        </tbody>
+					          </table>
+					        </form>
                         </div>
                         <!-- /.panel-body -->
                     </div>
