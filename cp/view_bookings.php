@@ -48,7 +48,8 @@ include("../includes/conf.class.php");
     <link href="../admin/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" type="text/css" href="css/jquery.validate.css" />
- 
+  <link rel="stylesheet" type="text/css" href="../template/css/datepicker.css" />
+    
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -58,6 +59,7 @@ include("../includes/conf.class.php");
     <![endif]-->
     <!-- jQuery -->
     <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../js//dtpicker/jquery.ui.datepicker-<?=$langauge_selcted?>.js"></script>
     <!-- Bootstrap Core JavaScript -->

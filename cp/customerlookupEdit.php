@@ -119,6 +119,7 @@ if(isset($update)){
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
+                        <form action="<?=$_SERVER['PHP_SELF']?>" method="post" id="form1">
                             <div class="form-group">
                                 <label>Title:</label>
                                 <?=$title?>
@@ -164,11 +165,12 @@ if(isset($update)){
                                 <input class="form-control" type="text" value="<?=$row['email']?>"  name="email" id="email" style="width:250px;" readonly="readonly" style="width:250px;"/>
                                 <input type="hidden" name="httpreffer" value="<?=$_SERVER['HTTP_REFERER']?>" />
                                 <input type="hidden" name="cid" value="<?=$row['client_id']?>">
-                    <input type="hidden" name="act" value="1">
+                                <input type="hidden" name="act" value="1">
                             </div>
                             <div>
                               <input type="submit" value="Submit"  style=" cursor:pointer; cursor:hand;" class="btn btn-primary" />
                             </div>
+                        </form>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -198,14 +200,11 @@ if(isset($update)){
     <script src="../admin/dist/js/sb-admin-2.js"></script>
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-    <script>
+    <script type="text/javascript">
     $(document).ready(function() {
-        $('#dataTables-example').DataTable({
-            responsive: true
-        });
-    });
-    </script>
-
-</body>
-
-</html>
+        $("#form1").validate();
+     });
+         
+</script> 
+<script src="js/jquery.validate.js" type="text/javascript"></script>
+<?php include("footer.php"); ?>
