@@ -116,7 +116,7 @@ if(isset($_GET['id']) && $_GET['id'] != ""){
                                 <div class="col-lg-6">       
                                   <div class="form-group">
                                       <label><?php echo ROOM_TYPE_TITLE; ?>:</label>
-                                      <input type="text" name="roomtype_title" id="roomtype_title" class="required digits form-control"  value="<?=$row['type_name']?>" size="15"/>&nbsp;&nbsp;<?php echo EXAMPLE_DELUXE_AND_STANDARD; ?>
+                                      <input type="text" name="roomtype_title" id="roomtype_title" class="required form-control"  value="<?=$row['type_name']?>" size="15"/>&nbsp;&nbsp;<?php echo EXAMPLE_DELUXE_AND_STANDARD; ?>
                                   </div>
                                   <div class="form-group">
                                       <label><?php echo ROOM_TYPE_IMG; ?>:</label>
@@ -124,7 +124,7 @@ if(isset($_GET['id']) && $_GET['id'] != ""){
                                   </div>
                                   <input type="hidden" name="addedit" value="<?=$id?>">
                                   <div class="form-group">
-                                     <input type="submit" value="<?php echo ROOM_TYPE_SUBMIT;?>" name="sbt_details" id="sbt_details" class="btn btn-primary"/>
+                                     <input type="submit" value="<?php echo ROOM_TYPE_SUBMIT;?>" name="submitRoomtype" class="btn btn-primary"/>
                                   </div>
                                 </div>
                             </form>
