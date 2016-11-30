@@ -1,17 +1,28 @@
 <?php 
-$reg_error = null;
+$error=0;
+// if (!defined($_GET['error'])){$_GET['error'] = null;}else if($_GET['error']==1){$error=1;}else{$error=1;}
+
 include ("access.php");
-if(isset($_POST['sbt_details'])){
+if(isset($_POST['adminReg'])){
+  // die();
   include("../includes/db.conn.php");
   
   $pass = $_POST['Password'];
   $conf = $_POST['confirm_password'];
   if ($pass==$conf) {
-     mysql_query("INSERT INTO `bsi_admin` (`pass`, `username`, `access_id`, `f_name`, `l_name`, `email`, `designation`, `status`) VALUES
-    (".$_POST['Password'].", ".$_POST['username'].", 1, ".$_POST['first_name'].", ".$_POST['last_name'].", ".$_POST['email'].", ".$_POST['position'].", 1);");
-    header("location:admin_hotel_details.php");
+    $sql = "INSERT INTO `bsi_admin` (`pass`, `username`, `access_id`, `f_name`, `l_name`, `email`, `designation`, `status`) VALUES
+    ('".$_POST['Password']."', '".$_POST['username']."', 1, '".$_POST['first_name']."', '".$_POST['last_name']."', '".$_POST['email']."', '".$_POST['position']."', 1);";
+    // echo "<pre>";print_r($sql);
+    $insert = mysql_query($sql);
+    if ($insert) {
+      header("location:admin_hotel_details.php");
+    } else {
+      echo "<pre>";print_r("Not inserted");die();
+    }
+    
+    // header("location:admin_hotel_details.php");
   } else {
-    $reg_error = 'Passwords not similar';
+    header("location:regadmin.php?error=1");
   }
 }
 
@@ -98,8 +109,10 @@ include("../includes/conf.class.php");
                     <div class="panel panel-default">
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                        <div style="color: red;"><?php if($reg_error){echo $reg_error;} ?></div>
-                            <form action="<?=$_SERVER['PHP_SELF']?>" method="post" id="form1" enctype="multipart/form-data">
+                        <div style="color: red;"><?php if($error==1){echo "Passwords Not Matching!";}elseif ($error==2) {
+                          echo "An error occured while trying to register Administrator!";
+                        } ?></div>
+                            <form action="<?=$_SERVER['PHP_SELF']?>" method="post" id="form1">
                                 <div class="col-lg-6">       
                                   <div class="form-group">
                                       <label>First Name:</label>
@@ -107,31 +120,31 @@ include("../includes/conf.class.php");
                                   </div>
                                   <div class="form-group">
                                       <label>Last Name:</label>
-                                      <input type="text" name="last_name" class="required form-control" size="50" placeholder="First Name"/>
+                                      <input type="text" name="last_name" class="required form-control" size="50" placeholder="Last Name"/>
                                   </div>
                                   <div class="form-group">
                                       <label>Email Adderess</label>
-                                      <input type="text" name="email" class="required form-control" size="50" placeholder="First Name"/>
+                                      <input type="email" name="email" class="required form-control" size="50" placeholder="example@domain.com"/>
                                   </div>
                                   <div class="form-group">
                                       <label>Position:</label>
-                                      <input type="text" name="position" class="required form-control" size="50" placeholder="First Name"/>
+                                      <input type="text" name="position" class="required form-control" size="50" placeholder="eg. Administrator"/>
                                   </div>
                                   <div class="form-group">
                                       <label>Username:</label>
-                                      <input type="text" name="username" class="required form-control" size="50" placeholder="First Name"/>
+                                      <input type="text" name="username" class="required form-control" size="50" placeholder="Username"/>
                                   </div>
                                   <div class="form-group">
                                       <label>Password:</label>
-                                      <input type="text" name="Password" class="required form-control" size="50" placeholder="First Name"/>
+                                      <input type="password" name="Password" class="required form-control" size="50" placeholder="Password"/>
                                   </div>
                                   <div class="form-group">
                                       <label>Confirm Password:</label>
-                                      <input type="text" name="confirm_password" class="required form-control" size="50" placeholder="First Name"/>
+                                      <input type="password" name="confirm_password" class="required form-control" size="50" placeholder="Confirm Password"/>
                                   </div>
                                   <input type="hidden" name="addedit" value="<?=$id?>">
                                   <div class="form-group">
-                                     <input type="submit" value="Register Administrator" name="submitRoomtype" class="btn btn-primary"/>
+                                     <input type="submit" value="Register Administrator" name="adminReg" class="btn btn-primary"/>
                                   </div>
                                 </div>
                             </form>
