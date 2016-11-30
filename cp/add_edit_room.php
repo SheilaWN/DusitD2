@@ -122,7 +122,7 @@ if(isset($_GET['rid']) && $_GET['rid'] != ""){
                                       <?=$capacityCombo;?>
                                   </div>
                                   <div class="form-group">
-                                     <input type="submit" value="<?php echo ADD_EDIT_SUBMIT;?>" name="sbt_details" id="sbt_details" class="btn btn-primary"/>
+                                     <input type="submit" value="<?php echo ADD_EDIT_SUBMIT;?>" name="submitRoom" class="btn btn-primary"/>
                                   </div>
                                 </div>
                             </form>

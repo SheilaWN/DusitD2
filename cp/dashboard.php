@@ -44,7 +44,7 @@ if (mysql_num_rows($get_preferences)) {
 }
 $preferences = array_values($preferences);
 // getting the bookings data
-$get_bookings=mysql_query("select count(bsi_bookings.booking_id) as `bookings`, monthname(bsi_bookings.booking_time) as `month` from bsi_bookings left join bsi_clients on bsi_bookings.client_id = bsi_clients.client_id group by `month`");
+$get_bookings=mysql_query("select count(bsi_bookings.booking_id) as `bookings`, monthname(bsi_bookings.start_date) as `month` from bsi_bookings left join bsi_clients on bsi_bookings.client_id = bsi_clients.client_id group by `month`");
 $count = 0;
 if(mysql_num_rows($get_bookings)){
 	while($row_user = mysql_fetch_assoc($get_bookings)){

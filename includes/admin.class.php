@@ -809,6 +809,19 @@ public function fetchClientBookingDetails($clientid){
 		$rthtml .= '</tbody>';
 		return $rthtml;
 	}
+
+	// public function generateRoomtypeListHtml(){
+	// 	$rthtml	= '<tbody>';
+	// 	$result = mysql_query($this->getRoomtypesql());
+	// 	while($row = mysql_fetch_assoc($result)){
+	// 		$rthtml .= '<tr>
+	// 					  <td>'.$row['type_name'].'</td>
+	// 					  <td class="center"  align="right"><a href="add_edit_roomtype.php?id='.$row['roomtype_ID'].'">'.ROOM_TYPE_EDIT.'</a> </td>
+	// 					</tr>';
+	// 	}
+	// 	$rthtml .= '</tbody>';
+	// 	return $rthtml;
+	// }
 	
 	public function delete_roomtype(){
 		global $bsiCore;

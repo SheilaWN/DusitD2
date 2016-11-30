@@ -96,14 +96,13 @@ include("../includes/admin.class.php");
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <?php echo ROOM_LIST;?>
+                            <?php echo CAPACITY_LIST;?>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                        	<span style="font-size:16px; font-weight:bold"><?php echo ROOM_LIST;?></span><span style="font-size:13px; color:#F00; padding-left:200px;"><?php if(isset($_SESSION['msg_exists'])){ echo $_SESSION['msg_exists']; }
-							unset($_SESSION['msg_exists']);?></span>
-							    <input type="button" value="<?php echo ADD_NEW_ROOM;?>" onClick="window.location.href='add_edit_room.php?rid=0&cid=0'" style="background: #EFEFEF; float:right"/>
-							 <hr />
+                            <span style="font-size:16px; font-weight:bold"><?php echo CAPACITY_LIST;?></span>
+                        	<input type="button" value="<?php echo ADD_NEW_CAPACITY;?>" onClick="window.location.href='add_edit_capacity.php?id=0'" style="background: #EFEFEF; float:right"/>
+                            <hr />
                             <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
 							    <thead>
 							      <tr>
