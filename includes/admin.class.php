@@ -497,7 +497,7 @@ public function fetchClientBookingDetails($clientid){
 				$status = '<font color="#FF0000"><b>'.CUSTOMER_BOOKING_CANCELLED.'</b></font>';
 				
 				$type   = 2;
-				$action = '<a href="javascript:;" onclick="javascript:booking_delete('.$row['booking_id'].');" class="bodytext">'.CUSTOMER_DELETE_FOREVER.'</a>';
+				// $action = '<a href="javascript:;" onclick="javascript:booking_delete('.$row['booking_id'].');" class="bodytext">'.CUSTOMER_DELETE_FOREVER.'</a>';
 			}
 			
 			  $html .= '<tr class="gradeX">
@@ -508,7 +508,7 @@ public function fetchClientBookingDetails($clientid){
 				<td align="right">'.$bsiCore->config['conf_currency_symbol'].$row['total_cost'].'</td>
 				<td align="right">'.$row['booking_time'].'</td>
 				<td align="right">'.$status.'</td>
-				<td align="right" nowrap="nowrap"><a href="viewdetails.php?booking_id='.base64_encode($row['booking_id']).'&book_type='.$type.'"" class="bodytext">'.CUSTOMER_BOOKING_VIEW_DETAILS.'</a>&nbsp;&nbsp;<a  href="javascript:;" onclick="javascript:myPopup2('.$row['booking_id'].');" class="bodytext">'.CUSTOMER_BOOKING_PRINT_VOUCHER.'</a>&nbsp;&nbsp;'.$action.'</td>
+				<td align="right" nowrap="nowrap"><a href="viewdetails.php?booking_id='.base64_encode($row['booking_id']).'&book_type='.$type.'"" class="bodytext">'.CUSTOMER_BOOKING_VIEW_DETAILS.'</a>&nbsp;&nbsp;<a  href="javascript:;" onclick="javascript:myPopup2('.$row['booking_id'].');" class="bodytext">'.CUSTOMER_BOOKING_PRINT_VOUCHER.'</a>&nbsp;&nbsp;</td>
 			  </tr>';
        }
 	   $html .= '</tbody>';	
@@ -945,7 +945,7 @@ public function fetchClientBookingDetails($clientid){
 		if($id){
 			$html = '<tr>
 			  <td width="80px"><strong>&nbsp;'.ADD_EDIT_PRICEPLAN_ROOMTYPE.':</strong></td>
-			  <td width="800px" align="left">&nbsp;'.$roomtypename.'</td>
+			  <td width="800px" align="left">&nbsp;'.$roomtFypename.'</td>
 			</tr>';
 			if($startdate != '0000-00-00' || $enddate != '0000-00-00'){
 				$html .= '<tr id="daybyplan1">

@@ -101,6 +101,7 @@ if($id){
 
     <!-- Custom CSS -->
     <link href="../admin/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../template/css/datepicker.css" />
 
     <!-- Custom Fonts -->
     <link href="../admin/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -113,9 +114,14 @@ if($id){
     <![endif]-->
     <!-- jQuery -->
     <script src="../admin/vendor/jquery/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="../js/dtpicker/jquery.ui.datepicker-<?=$langauge_selcted?>.js"></script>
 </head>
+<<<<<<< HEAD
+=======
+
+>>>>>>> c142d6b1ec9c6ffb67b2a4fd214048d846ea2665
 <body>
 <script type="text/javascript" charset="">
    $(document).ready(function() {
